@@ -1,0 +1,77 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+
+mainClassName = "Loader"
+
+group 'me.adversing'
+version '0.1-ALPHA'
+
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+allprojects {
+    repositories {
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+apply plugin: 'java'
+
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Gradle Jar File',
+                'Implementation-Version': version,
+                'Main-Class': 'me.adversing.edenstaffappbot.Loader'
+    }
+    baseName = project.name + '-SHADED'
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
+}
+
+dependencies {
+    implementation 'org.projectlombok:lombok:1.18.18'
+    annotationProcessor 'org.projectlombok:lombok:1.18.18'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    implementation 'org.telegram:telegrambots:5.7.1'
+
+    implementation 'mysql:mysql-connector-java:8.0.29'
+    implementation 'org.telegram:telegrambotsextensions:5.7.1'
+
+}
+
+
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'me.adversing.edenstaffappbot.Loader')
+    }
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    maven {
+        name 'm2-dv8tion'
+        url 'https://m2.dv8tion.net/releases'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
